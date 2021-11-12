@@ -1,0 +1,6 @@
+gnlTester/
+a.out
+a.out*
+*.o
+*.swp
+file.test
