@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:04:59 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/16 14:53:36 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/16 15:02:19 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,13 +115,13 @@ char	*get_next_line(int fd)
 	if (!ret)
 	{
 		//free(previous);
-		//previous = NULL;
-		printf("free2");
+		previous = NULL;
+		//printf("free2");
 	}
 	if (ft_strlen(readed) == 0)
 	{
 		//free(readed);
-		printf("free1");
+		//printf("free1");
 		return (NULL);
 	}
 	return (readed);
