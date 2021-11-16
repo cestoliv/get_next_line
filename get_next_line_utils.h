@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 09:52:09 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/12 16:28:46 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/16 09:09:33 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,7 @@
 # define GET_NEXT_LINE_UTILS_H
 # include <unistd.h>
 
+long	charchr(const char *s, char c);
 size_t	ft_strlen(const char *s);
 void	ft_putstr_fd(char *s, int fd);
 size_t	ft_strlcat(char *dst, const char *src, size_t dstsize);

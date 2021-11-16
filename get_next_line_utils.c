@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 09:50:24 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/12 13:50:28 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/16 13:28:49 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,21 @@ static void	*ft_calloc(size_t count, size_t size)
 	return (call);
 }
 
+long	charchr(const char *s, char c)
+{
+	long	cur;
+
+	cur = 0;
+	while (s[cur])
+	{
+		if (s[cur] == (unsigned char)c)
+			return (cur);
+		cur++;
+	}
+	if (s[cur] == (unsigned char)c)
+		return (cur);
+	return (-1);
+}
 
 void	ft_putstr_fd(char *s, int fd)
 {
@@ -96,13 +111,15 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (join);
 }
 
-char	*ft_substr(char const *s, unsigned int start, size_t len)
+char	*ft_substr(char *s, unsigned int start, size_t len)
 {
 	char	*sub;
 	size_t	new_len;
 
 	if (!s)
 		return (NULL);
+	else
+		free(s);
 	if (ft_strlen(s) < start)
 	{
 		sub = ft_calloc(1, sizeof(char));

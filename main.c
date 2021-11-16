@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:07:53 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/12 16:28:41 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/16 13:49:56 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,10 +21,10 @@ int	main(void)
 	int cur = 0;
 	int fd = open("file.test", O_RDONLY);
 	char *str;
-	while (cur < 3)
+	while (cur < 10)
 	{
 		str = get_next_line(fd);
-		printf("%s", str);
+		printf("%s(\\n)\n", str);
 		free(str);
 		cur++;
 	}
