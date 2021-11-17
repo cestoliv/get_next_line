@@ -6,10 +6,11 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 09:50:24 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/16 13:28:49 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/17 22:03:20 by ocartier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+#include "get_next_line_utils.h"
 #include <unistd.h>
 #include <stdlib.h>
 
@@ -39,7 +40,7 @@ static size_t	ft_strlcpy(char *dst, const char *src, size_t size)
 	return (ft_strlen(src));
 }
 
-static void	*ft_calloc(size_t count, size_t size)
+void	*ft_calloc(size_t count, size_t size)
 {
 	char	*call;
 	size_t	cur;
@@ -51,6 +52,19 @@ static void	*ft_calloc(size_t count, size_t size)
 	while (++cur < size * count)
 		call[cur] = 0;
 	return (call);
+}
+
+void	shiftstr(char **str, size_t start)
+{
+	int		len;
+	char	*tmp;
+
+	len = ft_strlen(*str);
+	tmp = ft_substr(*str, start, len);
+	free(*str);
+	*str = ft_substr(tmp, 0, ft_strlen(tmp));
+	free(tmp);
+	//*str = (char *)malloc((len - start + 1) * sizeof(char));
 }
 
 long	charchr(const char *s, char c)
@@ -111,15 +125,13 @@ char	*ft_strjoin(char const *s1, char const *s2)
 	return (join);
 }
 
-char	*ft_substr(char *s, unsigned int start, size_t len)
+char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*sub;
 	size_t	new_len;
 
 	if (!s)
 		return (NULL);
-	else
-		free(s);
 	if (ft_strlen(s) < start)
 	{
 		sub = ft_calloc(1, sizeof(char));
@@ -140,3 +152,4 @@ char	*ft_substr(char *s, unsigned int start, size_t len)
 	}
 	return (sub);
 }
+

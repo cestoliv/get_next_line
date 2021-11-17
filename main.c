@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:07:53 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/16 13:49:56 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/17 14:31:50 by ocartier         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,7 @@ int	main(void)
 	{
 		str = get_next_line(fd);
 		printf("%s(\\n)\n", str);
-		free(str);
+		//free(str);
 		cur++;
 	}
 	close(fd);
