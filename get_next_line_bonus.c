@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:04:59 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/25 14:39:25 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 15:19:07 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,20 +45,26 @@ prev_list *add_prevs(prev_list **prevs, char *buf, int fd)
 {
 	prev_list *elem;
 
-	while ((*prevs)->next)
+	if ((*prevs)->fd == fd)
+	{
+		(*prevs)->previous = ft_strjoin((*prevs)->previous, buf);
+		return (*prevs);
+	}
+	while (*prevs)
 	{
 		if ((*prevs)->fd == fd)
 		{
 			(*prevs)->previous = ft_strjoin((*prevs)->previous, buf);
 			return (*prevs);
 		}
+		if (!(*prevs)->next)
+			break ;
 		*(prevs) = (*prevs)->next;
 	}
 	elem = new_prevs(fd);
 	if (!elem)
 		return (NULL);
-	free(elem->previous);
-	elem->previous = ft_substr(buf, 0, ft_strlen(buf));
+	elem->previous = ft_strjoin(elem->previous, buf);
 	(*prevs)->next = elem;
 	return (elem);
 }
@@ -107,25 +113,24 @@ char	*get_next_line(int fd)
 		if (!prevs)
 			return (NULL);
 	}
+	cur_prev = add_prevs(&prevs, "", fd);
 	if (!(buf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char))))
 		return (NULL);
-	while (charchr(prevs->previous, '\n') < 0 && (ret = read(fd, buf, BUFFER_SIZE)))
+	while (charchr(cur_prev->previous, '\n') < 0 && (ret = read(fd, buf, BUFFER_SIZE)))
 	{
 		buf[ret] = 0;
 		cur_prev = add_prevs(&prevs, buf, fd);
 	}
 	free(buf);
-	cur = charchr(prevs->previous, '\n');
+	cur = charchr(cur_prev->previous, '\n');
 	if (cur >= 0)
 	{
-		readed = ft_substr(prevs->previous, 0, cur + 1);
-		shiftstr(&(prevs->previous), cur + 1);
+		readed = ft_substr(cur_prev->previous, 0, cur + 1);
+		shiftstr(&(cur_prev->previous), cur + 1);
 	}
 	else
 	{
-		readed = ft_substr(prevs->previous, 0, ft_strlen(prevs->previous));
-		//free(previous);
-		//previous = NULL;
+		readed = ft_substr(cur_prev->previous, 0, ft_strlen(cur_prev->previous));
 		remove_prevs(&prevs, fd);
 	}
 	if (ft_strlen(readed) == 0)

@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 09:50:24 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/25 14:13:56 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 15:13:39 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,9 +84,9 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	if (ft_strlen(s) < start)
 	{
 		sub = malloc(sizeof(char));
-		sub[0] = 0;
 		if (!sub)
 			return (NULL);
+		sub[0] = 0;
 	}
 	else
 	{

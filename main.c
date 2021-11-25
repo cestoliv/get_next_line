@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:07:53 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/25 14:27:54 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 14:46:35 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ int	main(void)
 
 	cur = 0;
 	fd = open("file2.test", O_RDONLY);
-	while (cur < 2)
+	while (cur < 5)
 	{
 		str = get_next_line(fd);
 		printf("%s(\\n)\n", str);
