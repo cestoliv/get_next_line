@@ -6,13 +6,20 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 09:57:40 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/25 13:26:28 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/25 13:34:47 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
 #ifndef GET_NEXT_LINE_H
 # define GET_NEXT_LINE_H
 # include <unistd.h>
+
+typedef struct s_prev_list
+{
+	char		*previous;
+	int			fd;
+	struct s_prev_list	*next;
+}	prev_list;
 
 char	*get_next_line(int fd);
 long	charchr(const char *s, char c);
