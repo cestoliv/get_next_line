@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:07:53 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/17 14:31:50 by ocartier         ###   ########.fr       */
+/*   Updated: 2021/11/24 12:21:44 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@
 int	main(void)
 {
 	int cur = 0;
-	int fd = open("file.test", O_RDONLY);
+	int fd = open("empty.test", O_RDONLY);
 	char *str;
 	while (cur < 10)
 	{
