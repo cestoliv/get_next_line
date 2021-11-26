@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:04:59 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/25 15:19:07 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 11:31:42 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-#include <stdio.h>
 void	shiftstr(char **str, size_t start)
 {
 	char	*tmp;
@@ -27,7 +26,7 @@ void	shiftstr(char **str, size_t start)
 
 prev_list	*new_prevs(int fd)
 {
-	prev_list *elem;
+	prev_list	*elem;
 
 	elem = malloc(sizeof(prev_list));
 	if (!elem)
@@ -43,67 +42,86 @@ prev_list	*new_prevs(int fd)
 
 prev_list *add_prevs(prev_list **prevs, char *buf, int fd)
 {
+	prev_list *curr;
 	prev_list *elem;
 
-	if ((*prevs)->fd == fd)
+	curr = *prevs;
+	if (curr->fd == fd)
 	{
-		(*prevs)->previous = ft_strjoin((*prevs)->previous, buf);
-		return (*prevs);
+		curr->previous = ft_strjoin(curr->previous, buf);
+		return (curr);
 	}
-	while (*prevs)
+	while (curr)
 	{
-		if ((*prevs)->fd == fd)
+		if (curr->fd == fd)
 		{
-			(*prevs)->previous = ft_strjoin((*prevs)->previous, buf);
-			return (*prevs);
+			curr->previous = ft_strjoin(curr->previous, buf);
+			return (curr);
 		}
-		if (!(*prevs)->next)
+		if (!curr->next)
 			break ;
-		*(prevs) = (*prevs)->next;
+		curr = curr->next;
 	}
 	elem = new_prevs(fd);
 	if (!elem)
 		return (NULL);
 	elem->previous = ft_strjoin(elem->previous, buf);
-	(*prevs)->next = elem;
+	curr->next = elem;
 	return (elem);
 }
 
-void	remove_prevs(prev_list **prevs, int fd)
+prev_list *delete_prev(prev_list *prevs, int fd)
 {
-	prev_list	*to_remove;
-	prev_list	*curr_elem;
+    prev_list *next;
 
-	curr_elem = (*prevs);
-	if (curr_elem && curr_elem->fd == fd)
+    if (prevs->fd == fd)
 	{
-		(*prevs) = (*prevs)->next;
-		free(curr_elem->previous);
-		free(curr_elem);
-	}
-	curr_elem = (*prevs);
-	while (curr_elem && curr_elem->next)
+        next = prevs->next;
+        free(prevs->previous);
+		free(prevs);
+        return (next);
+    }
+	else
 	{
-		if (curr_elem->next->fd == fd)
-		{
-			to_remove = curr_elem->next;
-			curr_elem->next = curr_elem->next->next;
-			free(to_remove->previous);
-			free(to_remove);
-		}
-		else
-			curr_elem = curr_elem->next;
-	}
+        prevs->next = delete_prev(prevs->next, fd);
+        return (prevs);
+    }
 }
+
+/*
+char	*get_readed(prev_list *prevs, prev_list *cur_prev, int fd)
+{
+	char	*readed;
+	long	cur;
+
+	cur = charchr(cur_prev->previous, '\n');
+	if (cur >= 0)
+	{
+		readed = ft_substr(cur_prev->previous, 0, cur + 1);
+		shiftstr(&(cur_prev->previous), cur + 1);
+	}
+	else
+	{
+		readed = ft_substr(cur_prev->previous, 0, ft_strlen(cur_prev->previous));
+		prevs = delete_prev(prevs, fd);
+	}
+	if (ft_strlen(readed) == 0)
+	{
+		free(readed);
+		return (NULL);
+	}
+	return (readed);
+}
+*/
 
 char	*get_next_line(int fd)
 {
 	ssize_t				ret;
 	char				*buf;
-	int					cur;
-	char				*readed;
 	static prev_list	*prevs = NULL;
 	prev_list			*cur_prev = NULL;
+	char	*readed;
+	long	cur;
 
 	if (!BUFFER_SIZE || BUFFER_SIZE < 1 || fd < 0 || read(fd, 0, 0) < 0)
 		return (NULL);
@@ -131,7 +149,7 @@ char	*get_next_line(int fd)
 	else
 	{
 		readed = ft_substr(cur_prev->previous, 0, ft_strlen(cur_prev->previous));
-		remove_prevs(&prevs, fd);
+		prevs = delete_prev(prevs, fd);
 	}
 	if (ft_strlen(readed) == 0)
 	{
