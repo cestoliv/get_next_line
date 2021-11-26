@@ -6,11 +6,11 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/12 09:50:24 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/25 15:13:39 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 12:55:27 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 #include <stdlib.h>
 
 size_t	ft_strlen(const char *s)
@@ -23,20 +23,13 @@ size_t	ft_strlen(const char *s)
 	return (cur);
 }
 
-static size_t	ft_strlcpy(char *dst, const char *src, size_t size)
+void	shiftstr(char **str, size_t start)
 {
-	size_t	cur;
+	char	*tmp;
 
-	if (size == 0)
-		return (ft_strlen(src));
-	cur = 0;
-	while (src[cur] && cur < (size - 1))
-	{
-		dst[cur] = src[cur];
-		cur++;
-	}
-	dst[cur] = 0;
-	return (ft_strlen(src));
+	tmp = *str;
+	*str = ft_substr(*str, start, ft_strlen(*str));
+	free(tmp);
 }
 
 long	charchr(const char *s, char c)
@@ -59,19 +52,26 @@ char	*ft_strjoin(char *s1, char const *s2)
 {
 	size_t	s1_len;
 	size_t	s2_len;
-	char	*join;
+	size_t	cur1;
+	size_t	cur2;
+	char	*result;
 
 	if (!s1 || !s2)
 		return (NULL);
 	s1_len = ft_strlen(s1);
 	s2_len = ft_strlen(s2);
-	join = (char *)malloc((s1_len + s2_len + 1) * sizeof(char));
-	if (!join)
+	result = malloc(sizeof(char) * (s1_len + s2_len + 1));
+	if (!result)
 		return (NULL);
-	ft_strlcpy(join, s1, s1_len + 1);
-	ft_strlcpy((join + s1_len), s2, s2_len + 1);
+	cur1 = -1;
+	while (s1[++cur1])
+		result[cur1] = s1[cur1];
+	cur2 = -1;
+	while (s2[++cur2])
+		result[cur1++] = s2[cur2];
+	result[cur1] = '\0';
 	free(s1);
-	return (join);
+	return (result);
 }
 
 char	*ft_substr(char const *s, unsigned int start, size_t len)

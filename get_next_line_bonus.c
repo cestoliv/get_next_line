@@ -6,7 +6,7 @@
 /*   By: ocartier <ocartier@student.42lyon.f>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2021/11/10 10:04:59 by ocartier          #+#    #+#             */
-/*   Updated: 2021/11/26 11:31:42 by ocartier         ###   ########lyon.fr   */
+/*   Updated: 2021/11/26 12:55:25 by ocartier         ###   ########lyon.fr   */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,47 +15,33 @@
 #include <unistd.h>
 #include <fcntl.h>
 
-void	shiftstr(char **str, size_t start)
+t_prev_list	*new_prevs(int fd)
 {
-	char	*tmp;
+	t_prev_list	*elem;
 
-	tmp = *str;
-	*str = ft_substr(*str, start, ft_strlen(*str));
-	free(tmp);
-}
-
-prev_list	*new_prevs(int fd)
-{
-	prev_list	*elem;
-
-	elem = malloc(sizeof(prev_list));
+	elem = malloc(sizeof(t_prev_list));
 	if (!elem)
 		return (NULL);
 	elem->fd = fd;
-	elem->previous = (char *)malloc(sizeof(char));
-	if (elem->previous == NULL)
+	elem->prev = (char *)malloc(sizeof(char));
+	if (elem->prev == NULL)
 		return (NULL);
-	elem->previous[0] = 0;
+	elem->prev[0] = 0;
 	elem->next = NULL;
 	return (elem);
 }
 
-prev_list *add_prevs(prev_list **prevs, char *buf, int fd)
+t_prev_list	*add_prevs(t_prev_list **prevs, char *buf, int fd)
 {
-	prev_list *curr;
-	prev_list *elem;
+	t_prev_list	*curr;
+	t_prev_list	*elem;
 
 	curr = *prevs;
-	if (curr->fd == fd)
-	{
-		curr->previous = ft_strjoin(curr->previous, buf);
-		return (curr);
-	}
 	while (curr)
 	{
 		if (curr->fd == fd)
 		{
-			curr->previous = ft_strjoin(curr->previous, buf);
+			curr->prev = ft_strjoin(curr->prev, buf);
 			return (curr);
 		}
 		if (!curr->next)
@@ -65,90 +51,77 @@ prev_list *add_prevs(prev_list **prevs, char *buf, int fd)
 	elem = new_prevs(fd);
 	if (!elem)
 		return (NULL);
-	elem->previous = ft_strjoin(elem->previous, buf);
+	elem->prev = ft_strjoin(elem->prev, buf);
 	curr->next = elem;
 	return (elem);
 }
 
-prev_list *delete_prev(prev_list *prevs, int fd)
+t_prev_list	*delete_prev(t_prev_list *prevs, int fd)
 {
-    prev_list *next;
+	t_prev_list	*next;
 
-    if (prevs->fd == fd)
+	if (prevs->fd == fd)
 	{
-        next = prevs->next;
-        free(prevs->previous);
+		next = prevs->next;
+		free(prevs->prev);
 		free(prevs);
-        return (next);
-    }
-	else
-	{
-        prevs->next = delete_prev(prevs->next, fd);
-        return (prevs);
-    }
-}
-
-/*
-char	*get_readed(prev_list *prevs, prev_list *cur_prev, int fd)
-{
-	char	*readed;
-	long	cur;
-
-	cur = charchr(cur_prev->previous, '\n');
-	if (cur >= 0)
-	{
-		readed = ft_substr(cur_prev->previous, 0, cur + 1);
-		shiftstr(&(cur_prev->previous), cur + 1);
+		return (next);
 	}
 	else
 	{
-		readed = ft_substr(cur_prev->previous, 0, ft_strlen(cur_prev->previous));
-		prevs = delete_prev(prevs, fd);
+		prevs->next = delete_prev(prevs->next, fd);
+		return (prevs);
 	}
-	if (ft_strlen(readed) == 0)
-	{
-		free(readed);
-		return (NULL);
-	}
-	return (readed);
 }
-*/
 
-char	*get_next_line(int fd)
+t_prev_list	*get_prev(t_prev_list **prevs, int fd)
 {
+	t_prev_list			*cur_prev;
 	ssize_t				ret;
 	char				*buf;
-	static prev_list	*prevs = NULL;
-	prev_list			*cur_prev = NULL;
-	char	*readed;
-	long	cur;
 
 	if (!BUFFER_SIZE || BUFFER_SIZE < 1 || fd < 0 || read(fd, 0, 0) < 0)
 		return (NULL);
-	if (!prevs)
-	{
-		prevs = new_prevs(fd);
-		if (!prevs)
-			return (NULL);
-	}
-	cur_prev = add_prevs(&prevs, "", fd);
-	if (!(buf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char))))
+	if (!(*prevs))
+		*prevs = new_prevs(fd);
+	if (!(*prevs))
 		return (NULL);
-	while (charchr(cur_prev->previous, '\n') < 0 && (ret = read(fd, buf, BUFFER_SIZE)))
+	cur_prev = add_prevs(prevs, "", fd);
+	buf = (char *)malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buf)
+		return (NULL);
+	ret = read(fd, buf, BUFFER_SIZE);
+	while (ret)
 	{
 		buf[ret] = 0;
-		cur_prev = add_prevs(&prevs, buf, fd);
+		cur_prev = add_prevs(prevs, buf, fd);
+		if (charchr(cur_prev->prev, '\n') >= 0)
+			break ;
+		ret = read(fd, buf, BUFFER_SIZE);
 	}
 	free(buf);
-	cur = charchr(cur_prev->previous, '\n');
+	return (cur_prev);
+}
+
+char	*get_next_line(int fd)
+{
+	static t_prev_list	*prevs = NULL;
+	t_prev_list			*cur_prev;
+	char				*readed;
+	long				cur;
+
+	cur_prev = get_prev(&prevs, fd);
+	if (!cur_prev)
+		return (NULL);
+	cur = charchr(cur_prev->prev, '\n');
 	if (cur >= 0)
 	{
-		readed = ft_substr(cur_prev->previous, 0, cur + 1);
-		shiftstr(&(cur_prev->previous), cur + 1);
+		readed = ft_substr(cur_prev->prev, 0, cur + 1);
+		shiftstr(&(cur_prev->prev), cur + 1);
 	}
 	else
 	{
-		readed = ft_substr(cur_prev->previous, 0, ft_strlen(cur_prev->previous));
+		readed = ft_substr(cur_prev->prev, 0, ft_strlen(cur_prev->prev));
 		prevs = delete_prev(prevs, fd);
 	}
 	if (ft_strlen(readed) == 0)
