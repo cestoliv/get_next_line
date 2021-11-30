@@ -21,7 +21,7 @@ int	main(void)
 	int cur = 0;
 	int fd = open("file.test", O_RDONLY);
 	char *str;
-	while (cur < 5)
+	while (cur < 4)
 	{
 		str = get_next_line(fd);
 		printf("%s(\\n)\n", str);
@@ -32,7 +32,7 @@ int	main(void)
 
 	cur = 0;
 	int fd2 = open("file2.test", O_RDONLY);
-	while (cur < 14)
+	while (cur < 2)
 	{
 		str = get_next_line(fd2);
 		printf("%s(\\n)\n", str);
